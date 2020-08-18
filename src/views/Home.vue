@@ -1,81 +1,79 @@
 <template>
-  <v-container>
-    <v-card dark>
-      <!-- Data Header -->
-      <v-card-title class="headline">Data Explorer</v-card-title>
+  <v-card dark>
+    <!-- Data Header -->
+    <v-card-title class="headline">Data Explorer</v-card-title>
 
-      <div class="mx-4">
-        <v-btn
-          :disabled="parseDate(new Date(Date.now())) == date"
-          rounded
-          dark
-          @click.prevent="date = parseDate(new Date(Date.now()))"
-        >Show Currently Active</v-btn>
+    <div class="mx-4">
+      <v-btn
+        :disabled="parseDate(new Date(Date.now())) == date"
+        rounded
+        dark
+        @click.prevent="date = parseDate(new Date(Date.now()))"
+      >Show Currently Active</v-btn>
 
-        <v-btn
-          rounded
-          dark
-          @click.prevent="date = parseDate(mostRecentRecord.publishedDate)"
-        >Clear Active Filter</v-btn>
+      <v-btn
+        rounded
+        dark
+        @click.prevent="date = parseDate(mostRecentRecord.publishedDate)"
+      >Clear Active Filter</v-btn>
 
-        <v-menu
-          ref="menu1"
-          v-model="menu1"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="dateInput"
-              label="Active As Of"
-              persistent-hint
-              readonly
-              hint="YYYY-MM-DD"
-              v-bind="attrs"
-              @blur="date = parseDate(dateInput)"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="dateInput" no-title @input="menu1 = false"></v-date-picker>
-        </v-menu>
-      </div>
-
-      <!-- Data Presentation -->
-      <v-data-table
-        class="mt-5"
-        dense
-        show-expand
-        single-expand="true"
-        :expanded.sync="expanded"
-        :headers="tableHeaders"
-        :items="pilotData"
-        item-key="employeeID"
-        :search="date"
-        :custom-filter="activeOn"
-        :footer-props="footerProps"
+      <v-menu
+        ref="menu1"
+        v-model="menu1"
+        :close-on-content-click="false"
+        transition="scale-transition"
+        offset-y
+        max-width="290px"
+        min-width="290px"
       >
-        <!-- Top Briefing Strip -->
-        <template v-slot:top>
-          <p
-            class="mx-3"
-          >As of {{ date }}, at least {{ pilotData.length - activePilotRecords.length }} of {{ pilotData.length }} will have retired</p>
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="dateInput"
+            label="Active As Of"
+            persistent-hint
+            readonly
+            hint="YYYY-MM-DD"
+            v-bind="attrs"
+            @blur="date = parseDate(dateInput)"
+            v-on="on"
+          ></v-text-field>
         </template>
+        <v-date-picker v-model="dateInput" no-title @input="menu1 = false"></v-date-picker>
+      </v-menu>
+    </div>
 
-        <!-- Data Table Item -->
-        <template
-          v-slot:item.seniorityNumber="{ item }"
-        >{{ getDynamicSeniorityForId(item.employeeID) }}</template>
+    <!-- Data Presentation -->
+    <v-data-table
+      class="mt-5"
+      dense
+      show-expand
+      :single-expand="true"
+      :expanded.sync="expanded"
+      :headers="tableHeaders"
+      :items="pilotData"
+      item-key="employeeID"
+      :search="date"
+      :custom-filter="activeOn"
+      :footer-props="footerProps"
+    >
+      <!-- Top Briefing Strip -->
+      <template v-slot:top>
+        <p
+          class="mx-3"
+        >As of {{ date }}, at least {{ pilotData.length - activePilotRecords.length }} of {{ pilotData.length }} will have retired</p>
+      </template>
 
-        <!-- Item Expansion -->
-        <template v-slot:expanded-item="{ item, headers }">
-          <td :colspan="headers.length">Seniority When Published: {{ item.seniorityNumber }}</td>
-        </template>
-      </v-data-table>
-    </v-card>
-  </v-container>
+      <!-- Data Table Item -->
+      <template
+        v-slot:item.seniorityNumber="{ item }"
+      >{{ getDynamicSeniorityForId(item.employeeID) }}</template>
+
+      <!-- Item Expansion -->
+      <template v-slot:expanded-item="{ item, headers }">
+        <td :colspan="headers.length">Seniority When Published: {{ item.seniorityNumber }}</td>
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script lang="ts">
