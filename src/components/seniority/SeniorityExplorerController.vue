@@ -86,7 +86,7 @@ export default class SeniorityExplorerController extends Vue {
   }
 
   get isCleared(): boolean {
-    if (this.publishedDate === "") {
+    if (this.publishedDate === "" || this.publishedDate == null) {
       return true;
     }
     try {
@@ -97,9 +97,10 @@ export default class SeniorityExplorerController extends Vue {
     }
   }
 
-  created() {
+  mounted() {
     if (this.publishedDate == null || this.publishedDate === "") {
       this.setToday();
+      return;
     }
     this.setToPublished();
   }
@@ -122,6 +123,10 @@ export default class SeniorityExplorerController extends Vue {
   }
 
   setToPublished(): void {
+    if (this.publishedDate == null || this.publishedDate === "") {
+      this.setToday();
+      return;
+    }
     const newValue = this.parseDate(this.publishedDate);
     this.pickerValue = newValue;
   }
