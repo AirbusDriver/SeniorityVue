@@ -44,6 +44,7 @@
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { parseDate } from "@/helpers";
 import { PropOptions } from "vue/types/options";
+import { FilterStatus } from "./types";
 
 const publishedDateProp: PropOptions = {
   type: [Date, String],
@@ -64,6 +65,8 @@ export default class SeniorityExplorerController extends Vue {
 
   pickerValue = "";
   menu1 = false;
+  filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
+  filterStatusTypes = FilterStatus;
 
   get pickerDate(): Date | null {
     if (this.pickerValue === "") {
@@ -123,12 +126,24 @@ export default class SeniorityExplorerController extends Vue {
     this.pickerValue = newValue;
   }
 
+  setFilterStatus(newStatus: FilterStatus) {
+    if (Object.values(this.filterStatusTypes).includes(newStatus)) {
+      this.filterStatus = newStatus;
+    }
+    throw new TypeError(`${newStatus} is not a valid filter status`);
+  }
+
   @Watch("pickerValue", { immediate: true })
   onPickerValueChange() {
     this.$emit("update:active-filter-date", {
       date: this.pickerDate,
       string: this.pickerValue
     });
+  }
+
+  @Watch("filterStatus", { immediate: true })
+  onFilterStatusChange() {
+    this.$emit("update:filter-status", this.filterStatus);
   }
 }
 </script>

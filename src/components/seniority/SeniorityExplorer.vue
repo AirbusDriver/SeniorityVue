@@ -4,7 +4,10 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <Controller @update:active-filter-date="updateFilterDate($event)" />
+            <Controller
+              @update:active-filter-date="updateFilterDate($event)"
+              @update:filter-status="updateFilterStatus($event)"
+            />
           </v-col>
         </v-row>
         <v-divider />
@@ -26,12 +29,14 @@ import { Vue, Component } from "vue-property-decorator";
 import Controller from "./SeniorityExplorerController.vue";
 import DataTable from "./SeniorityExplorerDataTable.vue";
 import { SeniorityRecord, PilotRecord } from "@/seniority/types";
+import { FilterStatus } from "./types";
 
 @Component({
   components: { Controller, DataTable }
 })
 export default class SeniorityExplorer extends Vue {
   activeFilterDate!: Date | null;
+  filterStatus!: FilterStatus;
 
   get seniorityRecords(): SeniorityRecord[] {
     return this.$store.getters["seniority/allRecords"];
@@ -58,6 +63,10 @@ export default class SeniorityExplorer extends Vue {
   updateFilterDate(event: { date: Date; string: string }) {
     const { date } = event;
     this.activeFilterDate = date;
+  }
+
+  updateFilterStatus(event: FilterStatus) {
+    this.filterStatus = event;
   }
 }
 </script>
