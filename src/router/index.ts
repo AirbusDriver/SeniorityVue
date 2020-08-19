@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
-import Home from '../views/Home.vue'
-import Seniority from '../views/Seniority.vue'
+import VueRouter, { RouteConfig } from 'vue-router';
+import Home from '../views/Home.vue';
+import Seniority from '../views/Seniority.vue';
+import SeniorityExplorer from '@/components/SeniorityExplorer.vue';
 
 Vue.use(VueRouter)
 
@@ -25,7 +26,7 @@ const routes: Array<RouteConfig> = [
     children: [
       {
         path: '',
-        component: Home,
+        component: SeniorityExplorer,
         name: 'SeniorityExplore'
       }
     ]
