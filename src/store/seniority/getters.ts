@@ -4,6 +4,8 @@ import { SeniorityState } from './types';
 import { SeniorityRecord } from '@/seniority/types';
 import { cloneDeep, sortBy } from 'lodash';
 
+// todo: Make an enum
+
 export const getters: GetterTree<SeniorityState, RootState> = {
   allRecords(state): SeniorityRecord[] {
     return cloneDeep(state.records);
