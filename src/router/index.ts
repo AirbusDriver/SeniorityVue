@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router';
 import Home from '../views/Home.vue';
 import Seniority from '../views/Seniority.vue';
-import SeniorityExplorer from '@/components/SeniorityExplorer.vue';
+import SeniorityExplorer from '@/components/seniority/SeniorityExplorer.vue';
 
 Vue.use(VueRouter)
 

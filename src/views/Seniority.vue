@@ -10,8 +10,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import SeniorityExplorerSystemBar from "@/components/SeniorityExplorerSystemBar.vue";
-import SeniorityNavigationBar from "@/components/SeniorityExplorerNavigationBar.vue";
+import SeniorityExplorerSystemBar from "@/components/seniority/SeniorityExplorerSystemBar.vue";
+import SeniorityNavigationBar from "@/components/seniority/SeniorityExplorerNavigationBar.vue";
 import { SeniorityActionTypes } from "@/store/seniority/types";
 
 const ACTIONS = SeniorityActionTypes;
