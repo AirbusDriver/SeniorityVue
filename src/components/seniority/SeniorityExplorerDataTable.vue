@@ -5,7 +5,13 @@
       :headers="tableHeaders"
       item-key="employeeID"
       :footer-props="footerProps"
-    ></v-data-table>
+      show-expand
+      single-expand
+    >
+      <template v-slot:expanded-item="{item, headers}">
+        <Expansion :item="item" :headers="headers" />
+      </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -13,6 +19,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { PilotRecord } from "@/seniority/types";
+import Expansion from "./SeniorityExplorerDataTableExpansion.vue";
 import { TableItem, PilotRecordMapper, ItemFilter } from "./types";
 import { parseDate } from "@/helpers";
 
@@ -48,7 +55,9 @@ const FOOTER_PROPS = {
   itemsPerPageOptions: [100, 250, 500, 1000]
 };
 
-@Component
+@Component({
+  components: { Expansion }
+})
 export default class SeniorityExplorerDataTable extends Vue {
   @Prop(PILOT_DATA_PROP) readonly pilotData!: PilotRecord[];
   @Prop(FILTER_FUNC_PROPS) readonly filterFunc!: ItemFilter;
