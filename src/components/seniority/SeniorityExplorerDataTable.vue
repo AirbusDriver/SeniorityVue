@@ -1,8 +1,9 @@
 <template>
   <div>
     <v-data-table
-      :items="activeItems"
+      :items="tableItems"
       :headers="tableHeaders"
+      :loading="loading"
       item-key="employeeID"
       :footer-props="footerProps"
       show-expand
@@ -16,9 +17,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
-import { PilotRecord } from "@/seniority/types";
+import { PilotRecord, EmployeeID } from "@/seniority/types";
 import Expansion from "./SeniorityExplorerDataTableExpansion.vue";
 import { TableItem, PilotRecordMapper, ItemFilter } from "./types";
 import { parseDate } from "@/helpers";
@@ -36,14 +37,23 @@ const createTableItems: (records: PilotRecord[]) => TableItem[] = records => {
   return records.map(recordToTableItemMapper);
 };
 
+function createSeniorityMap(items: TableItem[]): Map<string, number> {
+  const entries = items.map((item, idx): [string, number] => {
+    return [`${item.employeeID}`, idx + 1];
+  });
+  return new Map<string, number>(entries);
+}
+
 // PROPS DATA
 
 const PILOT_DATA_PROP = { type: Array, default: [] };
 
 const FILTER_FUNC_PROPS = { type: Function, default: () => true };
 
-const TABLE_HEADERS: (DataTableHeader & { value: keyof TableItem })[] = [
-  { text: "Seniority Number", value: "seniorityNumber" },
+const TABLE_HEADERS: (DataTableHeader & {
+  value: keyof TableItem | "dynamic";
+})[] = [
+  { text: "Seniority Number", value: "dynamic" },
   { text: "Employee ID", value: "employeeID" },
   { text: "Retire Date", value: "retireDateString" },
   { text: "Seat", value: "seat" },
@@ -65,13 +75,37 @@ export default class SeniorityExplorerDataTable extends Vue {
   tableHeaders = TABLE_HEADERS;
   footerProps = FOOTER_PROPS;
   initialItems: TableItem[] = [];
+  seniorityMap: Map<string, number> = new Map();
+  loading = false;
 
   created() {
+    this.loading = true;
     this.initialItems = createTableItems(this.pilotData);
+    this.loading = false;
   }
 
   get activeItems(): TableItem[] {
     return this.initialItems.filter(this.filterFunc);
+  }
+
+  get tableItems(): (TableItem & { dynamic: number | null })[] {
+    const out = this.activeItems.map(item => ({
+      ...item,
+      dynamic: this.getDynamicSeniorityForId(item.employeeID.toString())
+    }));
+    return out;
+  }
+
+  getDynamicSeniorityForId(id: EmployeeID): number | null {
+    const mapValue = this.seniorityMap.get(`${id}`);
+    return mapValue || null;
+  }
+
+  @Watch("activeItems", { immediate: true })
+  onActiveItemsChanged() {
+    this.loading = true;
+    this.seniorityMap = createSeniorityMap(this.activeItems);
+    this.loading = false;
   }
 }
 </script>
