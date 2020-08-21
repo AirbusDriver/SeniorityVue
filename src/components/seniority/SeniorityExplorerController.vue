@@ -46,7 +46,11 @@
       </v-menu>
       <v-row align="center">
         <v-checkbox v-model="employeeDetailsEnabled"></v-checkbox>
-        <v-text-field :disabled="!employeeDetailsEnabled" v-model="$data._employeeDetailsValue"></v-text-field>
+        <v-text-field
+          :disabled="!employeeDetailsEnabled"
+          v-model="$data._employeeDetailsValue"
+          placeholder="Enter an ID to pin the details to the top"
+        ></v-text-field>
       </v-row>
     </v-container>
   </div>

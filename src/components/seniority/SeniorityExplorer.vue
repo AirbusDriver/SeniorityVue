@@ -17,7 +17,11 @@
           <v-col cols="12">
             <div v-if="!hasRecords">No Record Data</div>
             <div v-else>
-              <DataTable :pilot-data="mostRecentPilotData" :filter-func="filterFunction" />
+              <DataTable
+                :pilot-data="mostRecentPilotData"
+                :filter-func="filterFunction"
+                :employee-details="showEmployeeDetails"
+              />
             </div>
           </v-col>
         </v-row>
