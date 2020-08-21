@@ -44,7 +44,7 @@ import { parseDate } from "@/helpers";
 export default class SeniorityExplorer extends Vue {
   activeFilterDate: Date | null = new Date(Date.now());
   filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
-  showEmployeeDetails = false;
+  showEmployeeDetails = "";
 
   get seniorityRecords(): SeniorityRecord[] {
     return this.$store.getters["seniority/allRecords"];
