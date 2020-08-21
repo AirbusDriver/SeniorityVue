@@ -2,9 +2,16 @@
   <div class="pa-4">
     <v-container>
       <v-row justify="space-around">
-        <v-btn rounded dark :disabled="isToday" @click.prevent="setToday()">Active Today</v-btn>
+        <v-btn
+          id="active-today-btn"
+          rounded
+          dark
+          :disabled="isToday"
+          @click.prevent="setToday()"
+        >Active Today</v-btn>
 
         <v-btn
+          id="active-published-btn"
           rounded
           dark
           :disabled="isCleared"
@@ -25,6 +32,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           class="my-4"
+          ref="picker-output"
           v-model="pickerValue"
           label="Active As Of"
           persistent-hint
@@ -97,7 +105,7 @@ export default class SeniorityExplorerController extends Vue {
     }
   }
 
-  mounted() {
+  created() {
     if (this.publishedDate == null || this.publishedDate === "") {
       this.setToday();
       return;

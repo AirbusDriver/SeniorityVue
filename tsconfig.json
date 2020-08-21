@@ -18,13 +18,13 @@
             "@wdio/mocha-framework",
             "@wdio/sync",
             "jest",
-            "veutify"
+            "vuetify"
         ],
         "paths": {
             "@/*": ["src/*"]
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-        "typeRoots": ["./node_modules/@types", "./node_modules/veutify/types"]
+        "typeRoots": ["./node_modules/@types", "./node_modules/vuetify/types"]
     },
     "include": [
         "src/**/*.ts",
