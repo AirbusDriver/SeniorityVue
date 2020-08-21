@@ -7,6 +7,7 @@
             <Controller
               @update:active-filter-date="updateFilterDate($event)"
               @update:filter-status="updateFilterStatus($event)"
+              @update:show-employee-details="showEmployeeDetails = $event"
               :published-date="recordPublishedDateString"
             />
           </v-col>
@@ -16,7 +17,11 @@
           <v-col cols="12">
             <div v-if="!hasRecords">No Record Data</div>
             <div v-else>
-              <DataTable :pilot-data="mostRecentPilotData" :filter-func="filterFunction" />
+              <DataTable
+                :pilot-data="mostRecentPilotData"
+                :filter-func="filterFunction"
+                :employee-details="showEmployeeDetails"
+              />
             </div>
           </v-col>
         </v-row>
@@ -39,6 +44,7 @@ import { parseDate } from "@/helpers";
 export default class SeniorityExplorer extends Vue {
   activeFilterDate: Date | null = new Date(Date.now());
   filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
+  showEmployeeDetails = false;
 
   get seniorityRecords(): SeniorityRecord[] {
     return this.$store.getters["seniority/allRecords"];
