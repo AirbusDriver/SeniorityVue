@@ -44,7 +44,19 @@ function createSeniorityMap(items: TableItem[]): Map<string, number> {
   return new Map<string, number>(entries);
 }
 
-// PROPS DATA
+function getRecordById(
+  id: string | number,
+  items: TableItem[]
+): TableItem | null {
+  const lookUp = `${id}`;
+  const record = items.find(record => `${record.employeeID}` === lookUp);
+  if (record != null) {
+    return record;
+  }
+  return null;
+}
+
+// Begin Component ######
 
 const PILOT_DATA_PROP = { type: Array, default: [] };
 
@@ -99,6 +111,10 @@ export default class SeniorityExplorerDataTable extends Vue {
   getDynamicSeniorityForId(id: EmployeeID): number | null {
     const mapValue = this.seniorityMap.get(`${id}`);
     return mapValue || null;
+  }
+
+  getRecordById(id: string | number) {
+    return Object.assign({}, getRecordById(id, this.activeItems));
   }
 
   @Watch("activeItems", { immediate: true })

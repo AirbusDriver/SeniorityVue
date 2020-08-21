@@ -18,33 +18,37 @@
           @click.prevent="clearActiveDate()"
         >Active When Published</v-btn>
       </v-row>
-    </v-container>
 
-    <v-menu
-      ref="menu1"
-      v-model="menu1"
-      :close-on-content-click="false"
-      transition="scale-transition"
-      offset-y
-      max-width="290px"
-      min-width="290px"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-text-field
-          class="my-4"
-          ref="picker-output"
-          v-model="pickerValue"
-          label="Active As Of"
-          persistent-hint
-          readonly
-          hint="YYYY-MM-DD"
-          v-bind="attrs"
-          @blur="pickerValue = parseDate(pickerValue)"
-          v-on="on"
-        ></v-text-field>
-      </template>
-      <v-date-picker v-model="pickerValue" no-title @input="menu1 = false"></v-date-picker>
-    </v-menu>
+      <v-menu
+        ref="menu1"
+        v-model="menu1"
+        :close-on-content-click="false"
+        transition="scale-transition"
+        offset-y
+        max-width="290px"
+        min-width="290px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            class="my-4"
+            ref="picker-output"
+            v-model="pickerValue"
+            label="Active As Of"
+            persistent-hint
+            readonly
+            hint="YYYY-MM-DD"
+            v-bind="attrs"
+            @blur="pickerValue = parseDate(pickerValue)"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="pickerValue" no-title @input="menu1 = false"></v-date-picker>
+      </v-menu>
+      <v-row align="center">
+        <v-checkbox v-model="employeeDetailsEnabled"></v-checkbox>
+        <v-text-field :disabled="!employeeDetailsEnabled" v-model="$data._employeeDetailsValue"></v-text-field>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -75,6 +79,8 @@ export default class SeniorityExplorerController extends Vue {
   menu1 = false;
   filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
   filterStatusTypes = FilterStatus;
+  employeeDetailsEnabled = false;
+  _employeeDetailsValue = "";
 
   get pickerDate(): Date | null {
     if (this.pickerValue === "") {
@@ -105,12 +111,20 @@ export default class SeniorityExplorerController extends Vue {
     }
   }
 
+  get employeeDetailsValue(): string {
+    if (this.employeeDetailsEnabled === false) {
+      return "";
+    }
+    return this.$data._employeeDetailsValue;
+  }
+
   created() {
     if (this.publishedDate == null || this.publishedDate === "") {
       this.setToday();
       return;
     }
     this.setToPublished();
+    this.$data._employeeDetailsValue = "";
   }
 
   parseDate(date: Date | string): string {
@@ -157,6 +171,11 @@ export default class SeniorityExplorerController extends Vue {
   @Watch("filterStatus", { immediate: true })
   onFilterStatusChange() {
     this.$emit("update:filter-status", this.filterStatus);
+  }
+
+  @Watch("employeeDetailsValue", { immediate: true })
+  onEmployeeDetailsChange() {
+    this.$emit("update:show-employee-details", this.employeeDetailsValue || "");
   }
 }
 </script>
