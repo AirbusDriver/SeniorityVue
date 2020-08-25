@@ -15,7 +15,8 @@
         <v-divider />
         <v-row>
           <v-col cols="12">
-            <div v-if="!hasRecords">No Record Data</div>
+            <div v-if="!hasRecords && !loading">No Records available</div>
+            <div v-else-if="loading">Loading Data</div>
             <div v-else>
               <DataTable
                 :pilot-data="mostRecentPilotData"
@@ -37,6 +38,9 @@ import DataTable from "./SeniorityExplorerDataTable.vue";
 import { SeniorityRecord, PilotRecord } from "@/seniority/types";
 import { FilterStatus, ItemFilter } from "./types";
 import { parseDate } from "@/helpers";
+import { SeniorityActionTypes } from "@/store/seniority/types";
+
+const ACTIONS = SeniorityActionTypes;
 
 @Component({
   components: { Controller, DataTable }
@@ -45,6 +49,7 @@ export default class SeniorityExplorer extends Vue {
   activeFilterDate: Date | null = new Date(Date.now());
   filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
   showEmployeeDetails = "";
+  loading = false;
 
   get seniorityRecords(): SeniorityRecord[] {
     return this.$store.getters["seniority/allRecords"];
@@ -96,6 +101,13 @@ export default class SeniorityExplorer extends Vue {
   mounted() {
     this.activeFilterDate = new Date(Date.now());
     this.filterStatus = FilterStatus.ACTIVE_ON;
+
+    if (!this.hasRecords) {
+      this.loading = true;
+      this.$store
+        .dispatch("seniority/" + ACTIONS.LOAD_SENIORITY_RECORDS)
+        .then(() => (this.loading = false));
+    }
   }
 
   updateFilterDate(event: { date: Date; string: string }) {
