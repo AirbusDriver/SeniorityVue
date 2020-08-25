@@ -1,4 +1,5 @@
 import { SeniorityRecord, BaseSeniorityService, SeniorityRecordSummary } from './types';
+import firebase from "firebase";
 import { cloneDeep } from "lodash";
 
 
@@ -36,4 +37,3 @@ export class LocalSeniorityService implements BaseSeniorityService {
     return Promise.resolve(this.records);
   }
 }
-

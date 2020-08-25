@@ -12,16 +12,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import SeniorityExplorerSystemBar from "@/components/seniority/SeniorityExplorerSystemBar.vue";
 import SeniorityNavigationBar from "@/components/seniority/SeniorityExplorerNavigationBar.vue";
-import { SeniorityActionTypes } from "@/store/seniority/types";
-
-const ACTIONS = SeniorityActionTypes;
 
 @Component({
   components: { SeniorityExplorerSystemBar, SeniorityNavigationBar }
 })
-export default class Seniority extends Vue {
-  mounted() {
-    this.$store.dispatch("seniority/" + ACTIONS.LOAD_SENIORITY_RECORDS);
-  }
-}
+export default class Seniority extends Vue {}
 </script>
