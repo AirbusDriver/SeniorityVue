@@ -2,8 +2,7 @@ import { GetterTree } from 'vuex';
 import { RootState } from '../index';
 import { SeniorityState } from './types';
 import { SeniorityRecord, SeniorityRecordSummary } from '@/seniority/types';
-import { cloneDeep, sortBy } from 'lodash';
-import { SeniorityTableItem } from '@/components/types';
+import { cloneDeep } from 'lodash';
 
 // todo: Make an enum
 

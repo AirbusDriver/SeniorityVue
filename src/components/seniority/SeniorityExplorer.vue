@@ -19,7 +19,7 @@
             <div v-else-if="loading">Loading Data</div>
             <div v-else>
               <DataTable
-                :pilot-data="mostRecentPilotData"
+                :pilot-data="selectedData"
                 :filter-func="filterFunction"
                 :employee-details="showEmployeeDetails"
               />
@@ -59,19 +59,26 @@ export default class SeniorityExplorer extends Vue {
     return this.seniorityRecords.length > 0;
   }
 
-  get mostRecentPilotData(): PilotRecord[] {
-    if (!this.hasRecords) {
+  get selectedData(): PilotRecord[] {
+    const record = this.selectedRecord;
+    if (record == null) {
       return [];
     }
-    const mostRecentRecord: SeniorityRecord = this.$store.getters[
-      "seniority/mostRecentRecord"
-    ];
-    return [...mostRecentRecord.records];
+    return record.records.sort((a, b) =>
+      a.seniorityNumber < b.seniorityNumber ? -1 : 1
+    );
   }
 
-  get mostRecentRecord(): SeniorityRecord | null {
+  get selectedRecord(): SeniorityRecord | null {
     if (!this.hasRecords) {
       return null;
+    }
+    if (this.$route.params.id != null) {
+      const id = this.$route.params.id;
+      const record = this.seniorityRecords.find(rec => rec.id === id);
+      if (record != null) {
+        return record;
+      }
     }
     const mostRecentRecord: SeniorityRecord = this.$store.getters[
       "seniority/mostRecentRecord"
@@ -92,8 +99,8 @@ export default class SeniorityExplorer extends Vue {
   }
 
   get recordPublishedDateString(): string {
-    if (this.mostRecentRecord) {
-      return parseDate(this.mostRecentRecord.publishedDate);
+    if (this.selectedRecord) {
+      return parseDate(this.selectedRecord.publishedDate);
     }
     return "";
   }
