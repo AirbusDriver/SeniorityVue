@@ -1,10 +1,12 @@
 import { GetterTree } from 'vuex';
 import { RootState } from '../index';
 import { SeniorityState } from './types';
-import { SeniorityRecord } from '@/seniority/types';
+import { SeniorityRecord, SeniorityRecordSummary } from '@/seniority/types';
 import { cloneDeep, sortBy } from 'lodash';
+import { SeniorityTableItem } from '@/components/types';
 
 // todo: Make an enum
+
 
 export const getters: GetterTree<SeniorityState, RootState> = {
   allRecords(state): SeniorityRecord[] {
@@ -23,5 +25,14 @@ export const getters: GetterTree<SeniorityState, RootState> = {
       return a.publishedDate === b.publishedDate ? 0 : a.publishedDate < b.publishedDate ? -1 : 1;
     }
     return records.sort(sorter);
+  },
+  allRecordSummaries(state, getters): SeniorityRecordSummary[] {
+    const records: SeniorityRecord[] = getters.recordsByPublishedDate;
+    return records.reduce((acc: SeniorityRecordSummary[], rec): SeniorityRecordSummary[] => {
+      const { id, publishedDate, recordCount } = rec;
+      return [...acc, {
+        id, publishedDate, recordCount
+      }]
+    }, [])
   }
 }
