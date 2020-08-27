@@ -9,7 +9,10 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { SeniorityRecordSummary } from "../../seniority/types";
+import { SeniorityGetterTypes } from "@/store/seniority";
 import SeniorityDirectoryCard from "./SeniorityDirectoryCard.vue";
+
+const getters = SeniorityGetterTypes;
 
 @Component({
   components: { SeniorityDirectoryCard }
@@ -17,7 +20,7 @@ import SeniorityDirectoryCard from "./SeniorityDirectoryCard.vue";
 export default class SeniorityDirectory extends Vue {
   get allRecordSummaries(): SeniorityRecordSummary[] {
     const records: SeniorityRecordSummary[] = this.$store.getters[
-      "seniority/allRecordSummaries"
+      `seniority/${getters.ALL_RECORD_SUMMARIES}`
     ];
     return records.sort(
       (a, b) => (+a.publishedDate > +b.publishedDate ? -1 : 1) // descending by date

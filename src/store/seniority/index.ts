@@ -6,6 +6,8 @@ import { state } from './state';
 import { getters } from './getters';
 import { SeniorityState } from './types';
 
+export * from './types';
+
 export const seniority: Module<SeniorityState, RootState> = {
   namespaced: true,
   actions,

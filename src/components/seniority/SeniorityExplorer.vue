@@ -51,6 +51,7 @@ import Controller from "./SeniorityExplorerController.vue";
 import DataTable from "./SeniorityExplorerDataTable.vue";
 import { SeniorityRecord, PilotRecord } from "@/seniority/types";
 import { FilterStatus, ItemFilter } from "./types";
+import { SeniorityGetterTypes as getters } from "@/store/seniority";
 import { parseDate } from "@/helpers";
 
 @Component({
@@ -78,7 +79,7 @@ export default class SeniorityExplorer extends Vue {
   }
 
   get mostRecentRecord(): SeniorityRecord | null {
-    return this.$store.getters["seniority/mostRecentRecord"];
+    return this.$store.getters[`seniority/${getters.MOST_RECENT_RECORD}`];
   }
 
   get filterFunction(): ItemFilter {
@@ -94,7 +95,7 @@ export default class SeniorityExplorer extends Vue {
   }
 
   get hasRecords(): boolean {
-    return this.$store.getters["seniority/hasRecords"];
+    return this.$store.getters[`seniority/${getters.HAS_RECORDS}`];
   }
 
   get recordPublishedDateString(): string {
@@ -120,7 +121,7 @@ export default class SeniorityExplorer extends Vue {
 
   getSelectedRecord(id: string): SeniorityRecord | null {
     const record: SeniorityRecord | null = this.$store.getters[
-      "seniority/getRecordForId"
+      `seniority/${getters.GET_RECORD_FOR_ID}`
     ](id);
     if (record == null) {
       throw new Error(`could not get record for id: ${id}`);

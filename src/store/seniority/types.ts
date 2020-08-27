@@ -1,4 +1,6 @@
-import { SeniorityRecord, SeniorityRecordSummary, PilotRecord } from '@/seniority/types';
+import { SeniorityRecord } from '@/seniority/types';
+
+export const NAMESPACE = "seniority";
 
 export interface SeniorityState {
   records: SeniorityRecord[];
@@ -13,29 +15,11 @@ export enum SeniorityActionTypes {
   LOAD_SENIORITY_RECORDS = "LOAD_SENIORITY_RECORDS",
 }
 
-export interface DbSeniorityListsNodeItem {
-  publishedStamp: number;
-  id: string;
-  recordCount: number;
-  publishedDate: string;
-}
-
-export interface DbPilotRecordNode {
-  employeeID: string;
-  base: string;
-  fleet: string;
-  retireDate: string;
-  seat: string;
-  seniorityNumber: number;
-}
-
-export interface DbSeniorityDataNodeItem {
-  [key: string]: DbPilotRecordNode;
-}
-export interface DbSeniorityListsNode {
-  [key: string]: DbSeniorityListsNodeItem;
-}
-
-export interface DbSeniorityDataNode {
-  [key: string]: DbSeniorityDataNodeItem;
+export enum SeniorityGetterTypes {
+  ALL_RECORDS = "ALL_RECORDS",
+  HAS_RECORDS = "HAS_RECORDS",
+  MOST_RECENT_RECORD = "MOST_RECENT_RECORD",
+  RECORDS_BY_PUBLISHED_DATE = "RECORDS_BY_PUBLISHED_DATE",
+  ALL_RECORD_SUMMARIES = "ALL_RECORD_SUMMARIES",
+  GET_RECORD_FOR_ID = "GET_RECORD_FOR_ID",
 }

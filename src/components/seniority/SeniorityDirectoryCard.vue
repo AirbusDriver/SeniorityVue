@@ -18,6 +18,7 @@ import {
   SeniorityRecord,
   PilotRecord
 } from "../../seniority/types";
+import { SeniorityGetterTypes as getters } from "@/store/seniority";
 import moment from "moment";
 
 function filterRetired(records: PilotRecord[], refDate?: Date): PilotRecord[] {
@@ -40,7 +41,9 @@ export default class SeniorityDirectoryCard extends Vue {
   }
 
   get record(): SeniorityRecord {
-    return this.$store.getters["seniority/getRecordForId"](this.summary.id);
+    return this.$store.getters[`seniority/${getters.GET_RECORD_FOR_ID}`](
+      this.summary.id
+    );
   }
 
   get numRetired(): number {
