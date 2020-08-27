@@ -40,4 +40,6 @@ npm run lint
 
 ### Customize configuration
 
+In order to use a firebase instance, the `env.sample` file contains the necissary env vars for local and production configurations.
+
 See [Configuration Reference](https://cli.vuejs.org/config/).

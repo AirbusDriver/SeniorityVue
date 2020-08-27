@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import Home from '../views/Home.vue';
 import Seniority from '../views/Seniority.vue';
 import SeniorityExplorer from '@/components/seniority/SeniorityExplorer.vue';
+import SeniorityDirectory from '@/components/seniority/SeniorityDirectory.vue';
 
 Vue.use(VueRouter)
 
@@ -25,10 +26,22 @@ const routes: Array<RouteConfig> = [
     component: Seniority,
     children: [
       {
-        path: '',
+        path: 'data/:recordId',
         component: SeniorityExplorer,
-        name: 'SeniorityExplore'
-      }
+        name: 'SeniorityListDataShow',
+        props: true,
+      },
+      {
+        path: 'records',
+        component: SeniorityDirectory,
+        name: 'SeniorityDirectoryList'
+      },
+      {
+        path: 'data',
+        component: SeniorityExplorer,
+        name: 'SeniorityListDataShow_latest',
+        props: route => ({ recordId: "latest" })
+      },
     ]
   }
 ]
@@ -37,6 +50,11 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(to);
+  next();
 })
 
 export default router

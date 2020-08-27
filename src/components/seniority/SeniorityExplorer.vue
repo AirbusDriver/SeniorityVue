@@ -2,6 +2,18 @@
   <div>
     <v-card dark>
       <v-container>
+        <v-row justify-center>
+          <v-spacer />
+          <v-col cols="10">
+            <p
+              v-if="recordPublishedDateString"
+              class="text-center text-h5"
+            >Seniority List Published: {{ recordPublishedDateString }}</p>
+
+            <p v-else class="red lighten-2 white--text">{{ recordError }}</p>
+          </v-col>
+          <v-spacer />
+        </v-row>
         <v-row>
           <v-col cols="12">
             <Controller
@@ -19,10 +31,12 @@
             <div v-else-if="loading">Loading Data</div>
             <div v-else>
               <DataTable
-                :pilot-data="mostRecentPilotData"
+                v-if="recordData.length > 0"
+                :pilot-data="recordData"
                 :filter-func="filterFunction"
                 :employee-details="showEmployeeDetails"
               />
+              <div v-else>{{ recordError }}</div>
             </div>
           </v-col>
         </v-row>
@@ -32,51 +46,39 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import Controller from "./SeniorityExplorerController.vue";
 import DataTable from "./SeniorityExplorerDataTable.vue";
 import { SeniorityRecord, PilotRecord } from "@/seniority/types";
 import { FilterStatus, ItemFilter } from "./types";
 import { parseDate } from "@/helpers";
-import { SeniorityActionTypes } from "@/store/seniority/types";
-
-const ACTIONS = SeniorityActionTypes;
 
 @Component({
   components: { Controller, DataTable }
 })
 export default class SeniorityExplorer extends Vue {
+  @Prop({ type: String, default: "latest" }) readonly recordId!: string;
+
   activeFilterDate: Date | null = new Date(Date.now());
   filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
   showEmployeeDetails = "";
   loading = false;
+  selectedRecord: SeniorityRecord | null = null;
+  recordError = "";
 
-  get seniorityRecords(): SeniorityRecord[] {
-    return this.$store.getters["seniority/allRecords"];
-  }
-
-  get hasRecords(): boolean {
-    return this.seniorityRecords.length > 0;
-  }
-
-  get mostRecentPilotData(): PilotRecord[] {
-    if (!this.hasRecords) {
+  get recordData(): PilotRecord[] {
+    const record = this.selectedRecord;
+    if (record == null) {
       return [];
     }
-    const mostRecentRecord: SeniorityRecord = this.$store.getters[
-      "seniority/mostRecentRecord"
-    ];
-    return [...mostRecentRecord.records];
+    const records = record.records.sort((a, b) =>
+      a.seniorityNumber < b.seniorityNumber ? -1 : 1
+    );
+    return records;
   }
 
   get mostRecentRecord(): SeniorityRecord | null {
-    if (!this.hasRecords) {
-      return null;
-    }
-    const mostRecentRecord: SeniorityRecord = this.$store.getters[
-      "seniority/mostRecentRecord"
-    ];
-    return mostRecentRecord;
+    return this.$store.getters["seniority/mostRecentRecord"];
   }
 
   get filterFunction(): ItemFilter {
@@ -91,9 +93,13 @@ export default class SeniorityExplorer extends Vue {
     }
   }
 
+  get hasRecords(): boolean {
+    return this.$store.getters["seniority/hasRecords"];
+  }
+
   get recordPublishedDateString(): string {
-    if (this.mostRecentRecord) {
-      return parseDate(this.mostRecentRecord.publishedDate);
+    if (this.selectedRecord) {
+      return parseDate(this.selectedRecord.publishedDate);
     }
     return "";
   }
@@ -101,13 +107,25 @@ export default class SeniorityExplorer extends Vue {
   mounted() {
     this.activeFilterDate = new Date(Date.now());
     this.filterStatus = FilterStatus.ACTIVE_ON;
-
-    if (!this.hasRecords) {
-      this.loading = true;
-      this.$store
-        .dispatch("seniority/" + ACTIONS.LOAD_SENIORITY_RECORDS)
-        .then(() => (this.loading = false));
+    if (this.recordId === "latest") {
+      this.selectedRecord = this.mostRecentRecord;
+    } else {
+      try {
+        this.selectedRecord = this.getSelectedRecord(this.recordId);
+      } catch (error) {
+        this.recordError = `${error}`;
+      }
     }
+  }
+
+  getSelectedRecord(id: string): SeniorityRecord | null {
+    const record: SeniorityRecord | null = this.$store.getters[
+      "seniority/getRecordForId"
+    ](id);
+    if (record == null) {
+      throw new Error(`could not get record for id: ${id}`);
+    }
+    return record;
   }
 
   updateFilterDate(event: { date: Date; string: string }) {

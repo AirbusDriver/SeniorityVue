@@ -27,7 +27,7 @@ export enum Seat {
 
 export interface PilotRecord {
   employeeID: EmployeeID;
-  seniorityNumber?: number;
+  seniorityNumber: number;
   base: string;
   retireDate: Date;
   seat: Seat;

@@ -10,6 +10,7 @@
 <script lang="ts">
 import Vue from "vue";
 import TheNavBar from "@/components/TheNavBar.vue";
+import "./db";
 
 export default Vue.extend({
   name: "App",

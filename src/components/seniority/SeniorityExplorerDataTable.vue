@@ -64,7 +64,7 @@ function getRecordById<T extends { employeeID: string | number }>(
 
 // Begin Component ######
 
-const PILOT_DATA_PROP = { type: Array, default: [] };
+const PILOT_DATA_PROP = { type: Array, required: true };
 
 const FILTER_FUNC_PROPS = { type: Function, default: () => true };
 
