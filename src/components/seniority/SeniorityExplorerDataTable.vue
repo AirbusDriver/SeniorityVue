@@ -40,7 +40,6 @@ const createTableItems: (records: PilotRecord[]) => TableItem[] = records => {
   if (records.length === 0) {
     return [];
   }
-  debugger;
   return records.map(recordToTableItemMapper);
 };
 
@@ -101,7 +100,6 @@ export default class SeniorityExplorerDataTable extends Vue {
 
   created() {
     this.loading = true;
-    debugger;
     this.initialItems = createTableItems(this.pilotData);
     this.loading = false;
   }

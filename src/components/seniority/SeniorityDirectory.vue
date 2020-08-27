@@ -1,7 +1,7 @@
 <template>
   <div class="seniority-directory">
     <div v-for="summary in allRecordSummaries" :key="summary.id">
-      <SeniorityDirectoryCard :summary="summary" />
+      <SeniorityDirectoryCard :summary="summary" class="ma-5" />
     </div>
   </div>
 </template>
