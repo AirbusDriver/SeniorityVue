@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex';
-import { SeniorityState, SeniorityActionTypes, SeniorityMutationTypes as mutations, DbSeniorityListsNodeItem, DbSeniorityListsNode, DbSeniorityDataNode, DbSeniorityDataNodeItem } from './types';
+import { SeniorityState, SeniorityActionTypes, SeniorityMutationTypes as mutations } from './types';
 import { RootState } from '../index';
 import { SeniorityRecord } from '@/seniority/types';
 import { getCurrentSeniorityRecords } from './firebaseRequests';

@@ -1,6 +1,6 @@
 import db from "@/db";
 import { PilotRecord, SeniorityRecord } from '@/seniority/types';
-import { DbSeniorityListsNodeItem, DbSeniorityDataNodeItem, DbSeniorityListsNode, DbSeniorityDataNode } from './types';
+import { DbSeniorityListsNodeItem, DbSeniorityDataNodeItem, DbSeniorityListsNode, DbSeniorityDataNode } from "./firebaseNodeTypes";
 
 
 const seniorityListRef = db.ref('seniorityLists');

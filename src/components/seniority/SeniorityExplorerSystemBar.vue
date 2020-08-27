@@ -13,12 +13,13 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { SeniorityGetterTypes as getters } from "@/store/seniority";
 import { SeniorityRecord } from "@/seniority/types";
 
 @Component
 export default class SeniorityExplorerSystemBar extends Vue {
   get latestRecord(): SeniorityRecord | null {
-    return this.$store.getters["seniority/mostRecentRecord"];
+    return this.$store.getters[`seniority/${getters.MOST_RECENT_RECORD}`];
   }
 
   get latestRecordDate(): string {

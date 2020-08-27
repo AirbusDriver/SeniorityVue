@@ -40,7 +40,7 @@ const routes: Array<RouteConfig> = [
         path: 'data',
         component: SeniorityExplorer,
         name: 'SeniorityListDataShow_latest',
-        props: route => ({ recordId: "latest" })
+        props: () => ({ recordId: "latest" })
       },
     ]
   }
