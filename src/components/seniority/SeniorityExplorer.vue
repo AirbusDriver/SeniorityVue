@@ -2,6 +2,18 @@
   <div>
     <v-card dark>
       <v-container>
+        <v-row justify-center>
+          <v-spacer />
+          <v-col cols="10">
+            <p
+              v-if="recordPublishedDateString"
+              class="text-center text-h5"
+            >Seniority List Published: {{ recordPublishedDateString }}</p>
+
+            <p v-else class="red lighten-2 white--text">{{ recordError }}</p>
+          </v-col>
+          <v-spacer />
+        </v-row>
         <v-row>
           <v-col cols="12">
             <Controller
@@ -40,6 +52,7 @@ import DataTable from "./SeniorityExplorerDataTable.vue";
 import { SeniorityRecord, PilotRecord } from "@/seniority/types";
 import { FilterStatus, ItemFilter } from "./types";
 import { parseDate } from "@/helpers";
+import moment from "moment";
 
 @Component({
   components: { Controller, DataTable }
