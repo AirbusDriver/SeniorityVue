@@ -40,6 +40,7 @@ const createTableItems: (records: PilotRecord[]) => TableItem[] = records => {
   if (records.length === 0) {
     return [];
   }
+  debugger;
   return records.map(recordToTableItemMapper);
 };
 
@@ -64,7 +65,7 @@ function getRecordById<T extends { employeeID: string | number }>(
 
 // Begin Component ######
 
-const PILOT_DATA_PROP = { type: Array, default: [] };
+const PILOT_DATA_PROP = { type: Array, required: true };
 
 const FILTER_FUNC_PROPS = { type: Function, default: () => true };
 
@@ -100,6 +101,7 @@ export default class SeniorityExplorerDataTable extends Vue {
 
   created() {
     this.loading = true;
+    debugger;
     this.initialItems = createTableItems(this.pilotData);
     this.loading = false;
   }

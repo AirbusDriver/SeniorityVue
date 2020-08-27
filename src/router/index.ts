@@ -26,19 +26,21 @@ const routes: Array<RouteConfig> = [
     component: Seniority,
     children: [
       {
-        path: '',
+        path: 'data/:recordId',
         component: SeniorityExplorer,
-        name: 'SeniorityExplore'
-      },
-      {
-        path: '/data/:id',
-        component: SeniorityExplorer,
-        name: 'SeniorityListDataShow'
+        name: 'SeniorityListDataShow',
+        props: true,
       },
       {
         path: 'test',
         component: SeniorityDirectory,
         name: 'SeniorityDirectoryList'
+      },
+      {
+        path: '',
+        component: SeniorityExplorer,
+        name: 'SeniorityExplore',
+        props: route => ({ recordId: "latest" })
       },
     ]
   }

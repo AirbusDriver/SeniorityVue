@@ -3,7 +3,8 @@
     <SeniorityExplorerSystemBar />
     <v-container>
       <SeniorityNavigationBar />
-      <router-view></router-view>
+      <div v-show="loading">Fetching data...</div>
+      <router-view v-if="loading === false"></router-view>
     </v-container>
   </div>
 </template>
@@ -18,11 +19,14 @@ import { SeniorityActionTypes } from "@/store/seniority/types";
   components: { SeniorityExplorerSystemBar, SeniorityNavigationBar }
 })
 export default class Seniority extends Vue {
+  loading = false;
+
   created() {
-    if (this.$store.getters["seniority/allRecords"].length === 0) {
-      this.$store.dispatch(
-        `seniority/${SeniorityActionTypes.LOAD_SENIORITY_RECORDS}`
-      );
+    if (this.$store.getters["seniority/hasRecords"] === false) {
+      this.loading = true;
+      this.$store
+        .dispatch(`seniority/${SeniorityActionTypes.LOAD_SENIORITY_RECORDS}`)
+        .then(() => (this.loading = false));
     }
   }
 }

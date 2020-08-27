@@ -11,6 +11,9 @@ export const getters: GetterTree<SeniorityState, RootState> = {
   allRecords(state): SeniorityRecord[] {
     return cloneDeep(state.records);
   },
+  hasRecords(state): boolean {
+    return state.records.length > 0;
+  },
   mostRecentRecord(state, getters): SeniorityRecord | null {
     const records = getters.recordsByPublishedDate;
     return records.length > 0 ? records[records.length - 1] : null
@@ -33,5 +36,11 @@ export const getters: GetterTree<SeniorityState, RootState> = {
         id, publishedDate, recordCount
       }]
     }, [])
+  },
+  getRecordForId(state, getters): (id: string) => SeniorityRecord {
+    return id => {
+      const record = getters.allRecords.find((rec: SeniorityRecord) => rec.id === id);
+      return record;
+    }
   }
 }
