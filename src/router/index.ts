@@ -32,14 +32,14 @@ const routes: Array<RouteConfig> = [
         props: true,
       },
       {
-        path: 'test',
+        path: 'records',
         component: SeniorityDirectory,
         name: 'SeniorityDirectoryList'
       },
       {
-        path: '',
+        path: 'data',
         component: SeniorityExplorer,
-        name: 'SeniorityExplore',
+        name: 'SeniorityListDataShow_latest',
         props: route => ({ recordId: "latest" })
       },
     ]

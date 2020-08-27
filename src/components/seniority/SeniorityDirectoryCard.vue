@@ -2,7 +2,7 @@
   <v-card class="seniority-directory-card">
     <v-card-title>{{ formattedDate }}</v-card-title>
     <v-card-actions>
-      <v-btn :to="{ name: 'SeniorityListDataShow', params: {id: summary.id }}">Show Data Table</v-btn>
+      <v-btn :to="{ name: 'SeniorityListDataShow', params: {recordId: summary.id }}">Show Data Table</v-btn>
     </v-card-actions>
   </v-card>
 </template>
