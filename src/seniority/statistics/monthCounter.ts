@@ -1,9 +1,9 @@
 import { cloneDeep, zip } from 'lodash';
 
 
-type YearMonthKey = { year: number; month: number };
+export type YearMonthKey = { year: number; month: number };
 
-type MonthCounterData = { key: YearMonthKey; count: number };
+export type MonthCounterData = { key: YearMonthKey; count: number };
 
 export class MonthCounter {
   private _data: Map<number, Map<number, number>> = new Map();
