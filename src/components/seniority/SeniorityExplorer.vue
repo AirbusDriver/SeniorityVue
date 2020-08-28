@@ -53,8 +53,6 @@ import { SeniorityRecord, PilotRecord } from "@/seniority/types";
 import { FilterStatus, ItemFilter } from "./types";
 import { SeniorityGetterTypes as getters } from "@/store/seniority";
 import { parseDate } from "@/helpers";
-import { calcRetirementsPerMonth } from "@/seniority/statistics/seniorityStatistics";
-import { MonthCounterData } from "../../seniority/statistics/monthCounter";
 
 @Component({
   components: { Controller, DataTable }
@@ -107,22 +105,6 @@ export default class SeniorityExplorer extends Vue {
     return "";
   }
 
-  get retirementsPerMonthData(): MonthCounterData[] {
-    let data;
-    if (this.selectedRecord == null) {
-      return [];
-    }
-    try {
-      data = calcRetirementsPerMonth(
-        this.selectedRecord ? this.selectedRecord.records : []
-      ).iterData();
-    } catch (error) {
-      data = [];
-      console.error(error);
-    }
-    return [...data];
-  }
-
   mounted() {
     this.activeFilterDate = new Date(Date.now());
     this.filterStatus = FilterStatus.ACTIVE_ON;
@@ -135,7 +117,6 @@ export default class SeniorityExplorer extends Vue {
         this.recordError = `${error}`;
       }
     }
-    console.log(this.retirementsPerMonthData);
   }
 
   getSelectedRecord(id: string): SeniorityRecord | null {

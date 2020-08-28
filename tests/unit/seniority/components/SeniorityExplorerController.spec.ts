@@ -1,11 +1,9 @@
-import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
+import Vue from 'vue';
+import { Wrapper } from '@vue/test-utils';
 import SeniorityExplorerController from "@/components/seniority/SeniorityExplorerController.vue";
-import Vue, { VueConstructor, ComponentOptions } from "vue";
-import Vuetify from "vuetify";
+import { createWrapper } from '../../utils';
 
-Vue.use(Vuetify);
-
-const getPickerValue = (wrapper: Wrapper<SeniorityExplorerController>): string | null => (wrapper.vm.$refs['picker-output'] as any).value
+const getPickerValue = (wrapper: any): string | null => (wrapper.vm.$refs['picker-output'] as any).value
 
 describe("SeniorityExplorerController", () => {
 
@@ -18,14 +16,6 @@ describe("SeniorityExplorerController", () => {
   afterAll(() => {
     global.Date.now = RealDate;
   })
-
-  const createWrapper = <T>(component: VueConstructor, options: ComponentOptions<any> = {}) => {
-    return mount(component, {
-      localVue: createLocalVue(),
-      vuetify: new Vuetify(),
-      ...options
-    })
-  }
 
   describe("when not given a 'publishedDate' prop", () => {
     const wrapper = createWrapper(SeniorityExplorerController, {});
