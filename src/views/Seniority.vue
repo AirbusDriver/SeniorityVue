@@ -2,9 +2,12 @@
   <div class="seniority">
     <SeniorityExplorerSystemBar />
     <v-container>
-      <SeniorityNavigationBar />
-      <div v-show="loading">Fetching data...</div>
-      <router-view v-if="loading === false"></router-view>
+      <v-row>
+        <v-col cols="12">
+          <div v-show="loading">Fetching data...</div>
+          <router-view v-if="loading === false"></router-view>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -12,12 +15,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import SeniorityExplorerSystemBar from "@/components/seniority/SeniorityExplorerSystemBar.vue";
-import SeniorityNavigationBar from "@/components/seniority/SeniorityExplorerNavigationBar.vue";
 import { SeniorityGetterTypes as getters } from "@/store/seniority";
 import { SeniorityActionTypes as actions } from "@/store/seniority/types";
 
 @Component({
-  components: { SeniorityExplorerSystemBar, SeniorityNavigationBar }
+  components: { SeniorityExplorerSystemBar }
 })
 export default class Seniority extends Vue {
   loading = false;

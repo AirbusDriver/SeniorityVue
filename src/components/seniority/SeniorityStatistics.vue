@@ -1,15 +1,24 @@
 <template>
-  <div></div>
+  <div class="seniority-statistics">
+    <SenioriyStatisticsRetirementRateCard
+      v-if="selectedRecord"
+      :record="selectedRecord"
+      :key="selectedRecord.id"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { SeniorityGetterTypes } from "@/store/seniority/types";
 import { SeniorityRecord } from "../../seniority/types";
+import SenioriyStatisticsRetirementRateCard from "./SeniorityStatisticsRetirementRateCard.vue";
 
 const getters = SeniorityGetterTypes;
 
-@Component
+@Component({
+  components: { SenioriyStatisticsRetirementRateCard }
+})
 export default class SeniorityStatistics extends Vue {
   @Prop({ type: String, required: true }) readonly recordId!: string;
 
