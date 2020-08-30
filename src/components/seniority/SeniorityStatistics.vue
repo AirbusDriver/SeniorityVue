@@ -1,10 +1,16 @@
 <template>
   <div class="seniority-statistics">
-    <SenioriyStatisticsRetirementRateCard
-      v-if="selectedRecord"
-      :record="selectedRecord"
-      :key="selectedRecord.id"
-    />
+    <v-container fluid>
+      <v-row align="stretch" justify="center">
+        <v-col class="mt-n5" md="10" sm="12">
+          <SenioriyStatisticsRetirementRateCard
+            v-if="selectedRecord"
+            :record="selectedRecord"
+            :key="selectedRecord.id"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 

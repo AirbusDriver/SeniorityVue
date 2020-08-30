@@ -1,61 +1,55 @@
 <template>
   <div class="seniority-statistics-retirement-rate-card">
-    <v-container fluid>
-      <v-row align="stretch" justify="center">
-        <v-col class="mt-n5" md="10" sm="12">
-          <v-card>
-            <v-toolbar color="grey darken-1" flat dark>
-              <v-toolbar-title>Data as of {{ recordDate }}</v-toolbar-title>
-            </v-toolbar>
-            <v-container fluid>
-              <v-row>
-                <v-col cols="12">
-                  <div>
-                    <v-sparkline
-                      :value="lineVals"
-                      :labels="lineLabels"
-                      show-labels
-                      fill
-                      auto-draw
-                      :gradient="['rgb(230, 0, 0)', 'rgb(0, 230, 0)']"
-                      gradient-direction="top"
-                      smooth="2"
-                      height="75"
-                    >
-                      <template v-slot:label="{ index }">{{ lineLabels[index] }}</template>
-                    </v-sparkline>
-                  </div>
-                </v-col>
-              </v-row>
+    <v-card>
+      <v-toolbar color="grey darken-1" flat dark>
+        <v-toolbar-title>Data as of {{ recordDate }}</v-toolbar-title>
+      </v-toolbar>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12">
+            <div>
+              <v-sparkline
+                :value="lineVals"
+                :labels="lineLabels"
+                show-labels
+                fill
+                auto-draw
+                :gradient="['rgb(230, 0, 0)', 'rgb(0, 230, 0)']"
+                gradient-direction="top"
+                smooth="2"
+                height="75"
+              >
+                <template v-slot:label="{ index }">{{ lineLabels[index] }}</template>
+              </v-sparkline>
+            </div>
+          </v-col>
+        </v-row>
 
-              <v-divider />
+        <v-divider />
 
-              <v-row>
-                <v-col cols="12">
-                  <v-sheet max-height="500px" class="overflow-y-auto">
-                    <v-card-text>
-                      <v-list>
-                        <v-list-item v-for="item in retirementItems" :key="item.vKey">
-                          <v-list-item-content>
-                            <v-list-item-title>{{ item.dateString }}</v-list-item-title>
-                            <v-list-item-subtitle>
-                              {{ item.value.count }} retirements
-                              <span
-                                v-if="item.rolling"
-                              >{{ round(item.rolling) }}/month previous 6 months</span>
-                            </v-list-item-subtitle>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </v-card-text>
-                  </v-sheet>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-sheet max-height="500px" class="overflow-y-auto">
+              <v-card-text>
+                <v-list>
+                  <v-list-item v-for="item in retirementItems" :key="item.vKey">
+                    <v-list-item-content>
+                      <v-list-item-title>{{ item.dateString }}</v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ item.value.count }} retirements
+                        <span
+                          v-if="item.rolling"
+                        >{{ round(item.rolling) }}/month previous 6 months</span>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-sheet>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
   </div>
 </template>
 
