@@ -3,10 +3,22 @@
     <v-card-title>{{ formattedDate }}</v-card-title>
     <v-card-text>{{ numRetired }}/{{ numberOfPilots }} Retired</v-card-text>
     <v-card-actions>
-      <v-btn
-        class="primary"
-        :to="{ name: 'SeniorityListDataShow', params: {recordId: summary.id }}"
-      >Go To Data Table</v-btn>
+      <v-container fluid>
+        <v-row no-gutters>
+          <v-col cols="10" md="6">
+            <v-row justify="space-around" align="center">
+              <v-btn
+                class="primary"
+                :to="{ name: 'SeniorityListDataShow', params: { recordId: summary.id }}"
+              >Data</v-btn>
+              <v-btn
+                class="primary"
+                :to="{name: 'SeniorityStatisticsShow', params: { recordId: summary.id }}"
+              >Retirements</v-btn>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card-actions>
   </v-card>
 </template>

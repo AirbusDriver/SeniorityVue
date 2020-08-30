@@ -4,6 +4,7 @@ import Home from '../views/Home.vue';
 import Seniority from '../views/Seniority.vue';
 import SeniorityExplorer from '@/components/seniority/SeniorityExplorer.vue';
 import SeniorityDirectory from '@/components/seniority/SeniorityDirectory.vue';
+import SeniorityStatistics from '@/components/seniority/SeniorityStatistics.vue';
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,12 @@ const routes: Array<RouteConfig> = [
         name: 'SeniorityListDataShow_latest',
         props: () => ({ recordId: "latest" })
       },
+      {
+        path: 'stats/:recordId',
+        component: SeniorityStatistics,
+        name: 'SeniorityStatisticsShow',
+        props: true,
+      }
     ]
   }
 ]

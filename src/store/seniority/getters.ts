@@ -38,7 +38,7 @@ export const getters: GetterTree<SeniorityState, RootState> = {
       }]
     }, [])
   },
-  [GET_RECORD_FOR_ID](state, getters): (id: string) => SeniorityRecord {
+  [GET_RECORD_FOR_ID](state, getters): (id: string) => SeniorityRecord | undefined {
     return id => {
       const record = getters[ALL_RECORDS].find((rec: SeniorityRecord) => rec.id === id);
       return record;
