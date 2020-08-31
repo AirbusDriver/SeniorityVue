@@ -27,8 +27,9 @@ import { DataTableHeader } from "vuetify/types";
 import { debounce } from "lodash";
 import { PilotRecord, EmployeeID } from "@/seniority/types";
 import Expansion from "./SeniorityExplorerDataTableExpansion.vue";
-import { TableItem, PilotRecordMapper, ItemFilter } from "./types";
+import { TableItem, PilotRecordMapper } from "./types";
 import { parseDate } from "@/helpers";
+import { PilotFilter } from "../../seniority/filters";
 
 const recordToTableItemMapper: PilotRecordMapper = record => {
   const retireDateString: string = parseDate(record.retireDate);
@@ -88,7 +89,7 @@ const FOOTER_PROPS = {
 })
 export default class SeniorityExplorerDataTable extends Vue {
   @Prop(PILOT_DATA_PROP) readonly pilotData!: PilotRecord[];
-  @Prop(FILTER_FUNC_PROPS) readonly filterFunc!: ItemFilter;
+  @Prop(FILTER_FUNC_PROPS) readonly filterFunc!: PilotFilter;
   @Prop({ type: String, default: "" }) readonly employeeDetails!: string;
 
   tableHeaders = TABLE_HEADERS;

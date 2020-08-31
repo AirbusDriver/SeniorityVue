@@ -8,7 +8,7 @@
           dark
           :disabled="isToday"
           @click.prevent="setToday()"
-        >Active Today</v-btn>
+        >{{ activeRetiredSelectState === "ACTIVE" ? "Active" : "Retired" }} Today</v-btn>
 
         <v-btn
           id="active-published-btn"
@@ -16,34 +16,44 @@
           dark
           :disabled="isCleared"
           @click.prevent="clearActiveDate()"
-        >Active When Published</v-btn>
+        >{{ activeRetiredSelectState === "ACTIVE" ? "Active" : "Retired" }} When Published</v-btn>
       </v-row>
 
-      <v-menu
-        ref="menu1"
-        v-model="menu1"
-        :close-on-content-click="false"
-        transition="scale-transition"
-        offset-y
-        max-width="290px"
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            class="my-4"
-            ref="picker-output"
-            v-model="pickerValue"
-            label="Active As Of"
-            persistent-hint
-            readonly
-            hint="YYYY-MM-DD"
-            v-bind="attrs"
-            @blur="pickerValue = parseDate(pickerValue)"
-            v-on="on"
-          ></v-text-field>
-        </template>
-        <v-date-picker v-model="pickerValue" no-title @input="menu1 = false"></v-date-picker>
-      </v-menu>
+      <v-row align="center" justify="space-between">
+        <v-col sm="4">
+          <v-select :items="activeRetireSelectItems" v-model="activeRetiredSelectState"></v-select>
+        </v-col>
+
+        <v-col sm="6">
+          <v-menu
+            ref="menu1"
+            v-model="menu1"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                class="my-4"
+                ref="picker-output"
+                v-model="pickerValue"
+                label="Active As Of"
+                persistent-hint
+                readonly
+                hint="YYYY-MM-DD"
+                v-bind="attrs"
+                @blur="pickerValue = parseDate(pickerValue)"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="pickerValue" no-title @input="menu1 = false"></v-date-picker>
+          </v-menu>
+        </v-col>
+      </v-row>
+
+      <!-- TODO: move to parent -->
       <v-row align="center">
         <v-checkbox v-model="employeeDetailsEnabled"></v-checkbox>
         <v-text-field
@@ -60,7 +70,15 @@
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { parseDate } from "@/helpers";
 import { PropOptions } from "vue/types/options";
-import { FilterStatus } from "./types";
+import { PilotFilter, buildPilotFilter } from "@/seniority/filters";
+import {
+  FilterBuilderOptions,
+  ActiveFilterOptions,
+  ActiveFilterStatus,
+  Seat
+} from "@/seniority/types";
+
+type ActiveRetiredStates = "ACTIVE" | "RETIRED";
 
 const publishedDateProp: PropOptions = {
   type: [Date, String],
@@ -81,10 +99,16 @@ export default class SeniorityExplorerController extends Vue {
 
   pickerValue = "";
   menu1 = false;
-  filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
-  filterStatusTypes = FilterStatus;
+
+  // TODO: rip out to parent
   employeeDetailsEnabled = false;
   _employeeDetailsValue = "";
+  activeRetireSelectItems: ActiveRetiredStates[] = ["ACTIVE", "RETIRED"];
+  activeRetiredSelectState: ActiveRetiredStates = "ACTIVE";
+
+  get pilotFilter(): PilotFilter {
+    return this.buildFilter();
+  }
 
   get pickerDate(): Date | null {
     if (this.pickerValue === "") {
@@ -115,11 +139,36 @@ export default class SeniorityExplorerController extends Vue {
     }
   }
 
+  // TODO: this needs to be moved to parent
   get employeeDetailsValue(): string {
     if (this.employeeDetailsEnabled === false) {
       return "";
     }
     return this.$data._employeeDetailsValue;
+  }
+
+  get activeFilterOptions(): ActiveFilterOptions | null {
+    return {
+      status:
+        this.activeRetiredSelectState === "ACTIVE"
+          ? ActiveFilterStatus.ACTIVE
+          : ActiveFilterStatus.RETIRED,
+      value: this.pickerDate !== null ? this.pickerDate : undefined
+    };
+  }
+
+  get pilotFilterOptions(): FilterBuilderOptions {
+    const out: FilterBuilderOptions = {
+      activeFilter:
+        this.activeFilterOptions != null ? this.activeFilterOptions : undefined
+    };
+
+    return out;
+  }
+
+  buildFilter(): PilotFilter {
+    const options = this.pilotFilterOptions;
+    return buildPilotFilter(options);
   }
 
   created() {
@@ -128,6 +177,8 @@ export default class SeniorityExplorerController extends Vue {
       return;
     }
     this.setToPublished();
+
+    // TODO: move to parent
     this.$data._employeeDetailsValue = "";
   }
 
@@ -157,29 +208,18 @@ export default class SeniorityExplorerController extends Vue {
     this.pickerValue = newValue;
   }
 
-  setFilterStatus(newStatus: FilterStatus) {
-    if (Object.values(this.filterStatusTypes).includes(newStatus)) {
-      this.filterStatus = newStatus;
-    }
-    throw new TypeError(`${newStatus} is not a valid filter status`);
-  }
-
-  @Watch("pickerValue", { immediate: true })
-  onPickerValueChange() {
-    this.$emit("update:active-filter-date", {
-      date: this.pickerDate,
-      string: this.pickerValue
-    });
-  }
-
-  @Watch("filterStatus", { immediate: true })
-  onFilterStatusChange() {
-    this.$emit("update:filter-status", this.filterStatus);
-  }
-
+  // TODO: move to parent
   @Watch("employeeDetailsValue", { immediate: true })
   onEmployeeDetailsChange() {
     this.$emit("update:show-employee-details", this.employeeDetailsValue || "");
+  }
+
+  @Watch("pilotFilterOptions", { deep: true, immediate: true })
+  onPilotFilterOptionsChange() {
+    this.$emit("update:pilot-filter", {
+      filter: this.pilotFilter,
+      options: this.pilotFilterOptions
+    });
   }
 }
 </script>

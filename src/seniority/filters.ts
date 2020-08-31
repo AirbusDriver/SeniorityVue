@@ -1,5 +1,4 @@
-import { PilotRecord, PilotRecordReducer, Seat, Base } from "./types";
-import { VAlert } from 'vuetify/lib';
+import { PilotRecord, PilotRecordReducer, Seat, FilterBuilderOptions, ActiveFilterStatus } from "./types";
 
 export type PilotFilter = (pilot: PilotRecord) => boolean;
 
@@ -18,6 +17,9 @@ export const hasFieldEqual: <K extends keyof PilotRecord, V extends PilotRecord[
 }
 
 export const multiFilter: MultiFilter = (...filters) => record => {
+  if (filters.length === 0) {
+    return true;
+  }
   return filters.every(filter => filter(record))
 }
 
@@ -30,31 +32,6 @@ export const FilterRetiredOnPilots: OnReducer<Date> = date => records => {
   const filter = isRetiredOn(date);
   return records.filter(filter);
 }
-
-export enum ActiveFilterStatus {
-  ACTIVE = "ACTIVE",
-  RETIRED = "RETIRED",
-}
-
-export interface FilterBuilderOptions {
-  activeFilter?: {
-    status: ActiveFilterStatus;
-    value?: Date;
-  };
-
-  baseFilter?: {
-    value: string;
-  };
-
-  seatFilter?: {
-    value: Seat;
-  };
-
-  fleetFilter?: {
-    value: string;
-  };
-}
-
 
 export const buildPilotFilter: (options: FilterBuilderOptions) => PilotFilter = (options) => {
   const filters: PilotFilter[] = [];

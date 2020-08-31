@@ -1,7 +1,6 @@
-import { FilterActiveOnPilots, FilterRetiredOnPilots, hasFieldEqual, multiFilter, buildPilotFilter, ActiveFilterStatus, FilterBuilderOptions } from '@/seniority/filters';
+import { FilterActiveOnPilots, FilterRetiredOnPilots, hasFieldEqual, multiFilter, buildPilotFilter } from '@/seniority/filters';
 import { makeTestData } from './seniorityUtils';
-import { Seat, PilotRecord } from '@/seniority/types';
-import { has } from 'lodash';
+import { Seat, PilotRecord, ActiveFilterStatus, FilterBuilderOptions } from '@/seniority/types';
 
 
 const testData = makeTestData();
