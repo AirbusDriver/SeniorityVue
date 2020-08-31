@@ -33,12 +33,20 @@
                 v-if="recordData.length > 0"
                 :pilot-data="recordData"
                 :filter-func="filterFunction"
-                :employee-details="showEmployeeDetails"
               />
               <div v-else>{{ recordError }}</div>
             </div>
           </v-col>
         </v-row>
+
+        <!-- <v-row align="center">
+          <v-checkbox v-model="employeeDetailsEnabled"></v-checkbox>
+          <v-text-field
+            :disabled="!employeeDetailsEnabled"
+            v-model="$data._employeeDetailsValue"
+            placeholder="Enter an ID to pin the details to the top"
+          ></v-text-field>
+        </v-row>-->
       </v-container>
     </v-card>
   </div>

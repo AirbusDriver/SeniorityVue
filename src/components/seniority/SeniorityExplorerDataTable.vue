@@ -9,11 +9,6 @@
       show-expand
       single-expand
     >
-      <!-- Employee Details -->
-      <template v-slot:top v-if="employeeDetails !== ''">
-        <p>{{ currentEmployeeDetails }}</p>
-      </template>
-
       <template v-slot:expanded-item="{item, headers}">
         <Expansion :item="item" :headers="headers" />
       </template>
@@ -24,7 +19,6 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
-import { debounce } from "lodash";
 import { PilotRecord, EmployeeID } from "@/seniority/types";
 import Expansion from "./SeniorityExplorerDataTableExpansion.vue";
 import { TableItem, PilotRecordMapper } from "./types";
@@ -51,18 +45,6 @@ function createSeniorityMap(items: TableItem[]): Map<string, number> {
   return new Map<string, number>(entries);
 }
 
-function getRecordById<T extends { employeeID: string | number }>(
-  id: string | number,
-  items: T[]
-): T | null {
-  const lookUp = `${id}`;
-  const record = items.find(record => `${record.employeeID}` === lookUp);
-  if (record != null) {
-    return record;
-  }
-  return null;
-}
-
 // Begin Component ######
 
 const PILOT_DATA_PROP = { type: Array, required: true };
@@ -72,7 +54,8 @@ const FILTER_FUNC_PROPS = { type: Function, default: () => true };
 const TABLE_HEADERS: (DataTableHeader & {
   value: keyof TableItem | "dynamic";
 })[] = [
-  { text: "Relative Seniority", value: "dynamic" },
+  { text: "Published Seniority", value: "seniorityNumber" },
+  { text: "Dynamic Seniority", value: "dynamic" },
   { text: "ID", value: "employeeID" },
   { text: "Retire Date", value: "retireDateString" },
   { text: "Seat", value: "seat" },
@@ -90,14 +73,12 @@ const FOOTER_PROPS = {
 export default class SeniorityExplorerDataTable extends Vue {
   @Prop(PILOT_DATA_PROP) readonly pilotData!: PilotRecord[];
   @Prop(FILTER_FUNC_PROPS) readonly filterFunc!: PilotFilter;
-  @Prop({ type: String, default: "" }) readonly employeeDetails!: string;
 
   tableHeaders = TABLE_HEADERS.map(k => ({ ...k, align: "center" }));
   footerProps = FOOTER_PROPS;
   initialItems: TableItem[] = [];
   seniorityMap: Map<string, number> = new Map();
   loading = false;
-  currentEmployeeDetails = "";
 
   created() {
     this.loading = true;
@@ -117,25 +98,26 @@ export default class SeniorityExplorerDataTable extends Vue {
     return out;
   }
 
-  setCurrentEmployeeDetails() {
-    if (this.employeeDetails == "") {
-      this.currentEmployeeDetails = "";
-      return;
-    }
-    if (!this.pilotData.map(p => p.employeeID).includes(this.employeeDetails)) {
-      this.currentEmployeeDetails = `Could not find ${this.employeeDetails} in seniority data`;
-      return;
-    }
-    const record = getRecordById(this.employeeDetails, this.tableItems);
-    if (record != null) {
-      const { employeeID, dynamic } = record;
-      this.currentEmployeeDetails = `Potential seniority for ${employeeID}: #${dynamic} out of ${this.tableItems.length} active pilots`;
-      return;
-    }
-    this.currentEmployeeDetails = `Potential seniority for ${this.employeeDetails}: RETIRED`;
-  }
+  // TODO: Move to parent
+  // setCurrentEmployeeDetails() {
+  //   if (this.employeeDetails == "") {
+  //     this.currentEmployeeDetails = "";
+  //     return;
+  //   }
+  //   if (!this.pilotData.map(p => p.employeeID).includes(this.employeeDetails)) {
+  //     this.currentEmployeeDetails = `Could not find ${this.employeeDetails} in seniority data`;
+  //     return;
+  //   }
+  //   const record = getRecordById(this.employeeDetails, this.tableItems);
+  //   if (record != null) {
+  //     const { employeeID, dynamic } = record;
+  //     this.currentEmployeeDetails = `Potential seniority for ${employeeID}: #${dynamic} out of ${this.tableItems.length} active pilots`;
+  //     return;
+  //   }
+  //   this.currentEmployeeDetails = `Potential seniority for ${this.employeeDetails}: RETIRED`;
+  // }
 
-  debouncedSetEmployeeDetails = debounce(this.setCurrentEmployeeDetails, 150);
+  // debouncedSetEmployeeDetails = debounce(this.setCurrentEmployeeDetails, 150);
 
   getDynamicSeniorityForId(id: EmployeeID): number | null {
     const mapValue = this.seniorityMap.get(`${id}`);
@@ -146,13 +128,7 @@ export default class SeniorityExplorerDataTable extends Vue {
   onActiveItemsChanged() {
     this.loading = true;
     this.seniorityMap = createSeniorityMap(this.activeItems);
-    this.debouncedSetEmployeeDetails();
     this.loading = false;
-  }
-
-  @Watch("employeeDetails", { immediate: true })
-  onEmployeeDetailsChange() {
-    this.debouncedSetEmployeeDetails();
   }
 }
 </script>
