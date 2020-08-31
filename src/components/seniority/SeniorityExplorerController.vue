@@ -19,11 +19,17 @@
         >{{ activeRetiredSelectState === "ACTIVE" ? "Active" : "Retired" }} When Published</v-btn>
       </v-row>
 
+      <!-- Active / Retired Switch -->
       <v-row align="center" justify="space-between">
         <v-col sm="4">
-          <v-select :items="activeRetireSelectItems" v-model="activeRetiredSelectState"></v-select>
+          <v-select
+            label="Status"
+            :items="activeRetireSelectItems"
+            v-model="activeRetiredSelectState"
+          ></v-select>
         </v-col>
 
+        <!-- Date Picker -->
         <v-col sm="6">
           <v-menu
             ref="menu1"
@@ -39,7 +45,7 @@
                 class="my-4"
                 ref="picker-output"
                 v-model="pickerValue"
-                label="Active As Of"
+                label="As Of"
                 persistent-hint
                 readonly
                 hint="YYYY-MM-DD"
@@ -53,9 +59,18 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <!-- Filters -->
+      <v-row align="end">
         <v-col sm="4">
-          <v-select :items="baseSelectChoices" v-model="baseSelect" placeholder="Select Base"></v-select>
+          <v-select :items="baseSelectChoices" v-model="baseSelect" label="Base" />
+        </v-col>
+
+        <v-col sm="4">
+          <v-select :items="seatSelectChoices" v-model="seatSelect" label="Seat" />
+        </v-col>
+
+        <v-col sm="4">
+          <v-select :items="fleetSelectChoices" v-model="fleetSelect" label="Fleet" />
         </v-col>
       </v-row>
 
@@ -80,7 +95,8 @@ import { PilotFilter, buildPilotFilter } from "@/seniority/filters";
 import {
   FilterBuilderOptions,
   ActiveFilterOptions,
-  ActiveFilterStatus
+  ActiveFilterStatus,
+  Seat
 } from "@/seniority/types";
 
 type ActiveRetiredStates = "ACTIVE" | "RETIRED";
@@ -112,6 +128,10 @@ export default class SeniorityExplorerController extends Vue {
   activeRetiredSelectState: ActiveRetiredStates = "ACTIVE";
   baseSelect = "ALL";
   baseSelectChoices = ["ALL", "BOS", "JFK", "MCO", "LGB", "FLL"];
+  seatSelect = "ALL";
+  seatSelectChoices = ["ALL", Seat.CA, Seat.FO];
+  fleetSelect = "ALL";
+  fleetSelectChoices = ["ALL", "320", "190"];
 
   get pilotFilter(): PilotFilter {
     return this.buildFilter();
@@ -171,16 +191,42 @@ export default class SeniorityExplorerController extends Vue {
     return { value: this.baseSelect };
   }
 
-  get pilotFilterOptions(): FilterBuilderOptions {
-    const activeFilter =
-      this.activeFilterOptions != null ? this.activeFilterOptions : undefined;
+  get seatFilterOptions(): { value: Seat } | null {
+    if (this.seatSelect === "ALL") {
+      return null;
+    }
+    return { value: this.seatSelect as Seat };
+  }
 
-    const baseFilter =
-      this.baseFilterOptions != null ? this.baseFilterOptions : undefined;
+  get fleetFilterOptions(): { value: string } | null {
+    if (this.fleetSelect === "ALL") {
+      return null;
+    }
+    return { value: this.fleetSelect };
+  }
+
+  get pilotFilterOptions(): FilterBuilderOptions {
+    const activeFilter = this.activeFilterOptions
+      ? this.activeFilterOptions
+      : undefined;
+
+    const baseFilter = this.baseFilterOptions
+      ? this.baseFilterOptions
+      : undefined;
+
+    const seatFilter = this.seatFilterOptions
+      ? this.seatFilterOptions
+      : undefined;
+
+    const fleetFilter = this.fleetFilterOptions
+      ? this.fleetFilterOptions
+      : undefined;
 
     const out: FilterBuilderOptions = {
       activeFilter,
-      baseFilter
+      baseFilter,
+      seatFilter,
+      fleetFilter
     };
 
     return out;

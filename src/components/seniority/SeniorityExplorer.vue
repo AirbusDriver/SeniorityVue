@@ -4,7 +4,7 @@
       <v-container>
         <v-row justify-center>
           <v-spacer />
-          <v-col cols="10">
+          <v-col cols="11">
             <p
               v-if="recordPublishedDateString"
               class="text-center text-h5"

@@ -72,8 +72,8 @@ const FILTER_FUNC_PROPS = { type: Function, default: () => true };
 const TABLE_HEADERS: (DataTableHeader & {
   value: keyof TableItem | "dynamic";
 })[] = [
-  { text: "Seniority Number", value: "dynamic" },
-  { text: "Employee ID", value: "employeeID" },
+  { text: "Relative Seniority", value: "dynamic" },
+  { text: "ID", value: "employeeID" },
   { text: "Retire Date", value: "retireDateString" },
   { text: "Seat", value: "seat" },
   { text: "Fleet", value: "fleet" },
@@ -92,7 +92,7 @@ export default class SeniorityExplorerDataTable extends Vue {
   @Prop(FILTER_FUNC_PROPS) readonly filterFunc!: PilotFilter;
   @Prop({ type: String, default: "" }) readonly employeeDetails!: string;
 
-  tableHeaders = TABLE_HEADERS;
+  tableHeaders = TABLE_HEADERS.map(k => ({ ...k, align: "center" }));
   footerProps = FOOTER_PROPS;
   initialItems: TableItem[] = [];
   seniorityMap: Map<string, number> = new Map();
