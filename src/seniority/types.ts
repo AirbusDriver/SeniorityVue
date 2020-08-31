@@ -47,3 +47,31 @@ export interface SeniorityRecord extends SeniorityRecordSummary {
 export interface BaseSeniorityService {
   getAllSeniorityRecordSummaries(): Promise<SeniorityRecordSummary[]>;
 }
+
+export type PilotRecordReducer = (records: PilotRecord[]) => PilotRecord[];
+
+export enum ActiveFilterStatus {
+  ACTIVE = "ACTIVE",
+  RETIRED = "RETIRED",
+}
+
+export type ActiveFilterOptions = {
+  status: ActiveFilterStatus;
+  value?: Date;
+}
+
+export interface FilterBuilderOptions {
+  activeFilter?: ActiveFilterOptions;
+
+  baseFilter?: {
+    value: string;
+  };
+
+  seatFilter?: {
+    value: Seat;
+  };
+
+  fleetFilter?: {
+    value: string;
+  };
+}

@@ -4,7 +4,7 @@
       <v-container>
         <v-row justify-center>
           <v-spacer />
-          <v-col cols="10">
+          <v-col cols="11">
             <p
               v-if="recordPublishedDateString"
               class="text-center text-h5"
@@ -17,8 +17,7 @@
         <v-row>
           <v-col cols="12">
             <Controller
-              @update:active-filter-date="updateFilterDate($event)"
-              @update:filter-status="updateFilterStatus($event)"
+              @update:pilot-filter="updatePilotFilter"
               @update:show-employee-details="showEmployeeDetails = $event"
               :published-date="recordPublishedDateString"
             />
@@ -34,12 +33,20 @@
                 v-if="recordData.length > 0"
                 :pilot-data="recordData"
                 :filter-func="filterFunction"
-                :employee-details="showEmployeeDetails"
               />
               <div v-else>{{ recordError }}</div>
             </div>
           </v-col>
         </v-row>
+
+        <!-- <v-row align="center">
+          <v-checkbox v-model="employeeDetailsEnabled"></v-checkbox>
+          <v-text-field
+            :disabled="!employeeDetailsEnabled"
+            v-model="$data._employeeDetailsValue"
+            placeholder="Enter an ID to pin the details to the top"
+          ></v-text-field>
+        </v-row>-->
       </v-container>
     </v-card>
   </div>
@@ -50,7 +57,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import Controller from "./SeniorityExplorerController.vue";
 import DataTable from "./SeniorityExplorerDataTable.vue";
 import { SeniorityRecord, PilotRecord } from "@/seniority/types";
-import { FilterStatus, ItemFilter } from "./types";
+import { PilotFilter } from "@/seniority/filters";
+// import { ItemFilter } from "./types";
 import { SeniorityGetterTypes as getters } from "@/store/seniority";
 import { parseDate } from "@/helpers";
 
@@ -61,11 +69,11 @@ export default class SeniorityExplorer extends Vue {
   @Prop({ type: String, default: "latest" }) readonly recordId!: string;
 
   activeFilterDate: Date | null = new Date(Date.now());
-  filterStatus: FilterStatus = FilterStatus.ACTIVE_ON;
   showEmployeeDetails = "";
   loading = false;
   selectedRecord: SeniorityRecord | null = null;
   recordError = "";
+  filterFunction: PilotFilter = () => true;
 
   get recordData(): PilotRecord[] {
     const record = this.selectedRecord;
@@ -82,18 +90,6 @@ export default class SeniorityExplorer extends Vue {
     return this.$store.getters[`seniority/${getters.MOST_RECENT_RECORD}`];
   }
 
-  get filterFunction(): ItemFilter {
-    if (
-      this.activeFilterDate !== null &&
-      this.filterStatus === FilterStatus.ACTIVE_ON
-    ) {
-      const dateString = parseDate(this.activeFilterDate);
-      return item => item.retireDateString > dateString;
-    } else {
-      return () => true;
-    }
-  }
-
   get hasRecords(): boolean {
     return this.$store.getters[`seniority/${getters.HAS_RECORDS}`];
   }
@@ -107,7 +103,6 @@ export default class SeniorityExplorer extends Vue {
 
   mounted() {
     this.activeFilterDate = new Date(Date.now());
-    this.filterStatus = FilterStatus.ACTIVE_ON;
     if (this.recordId === "latest") {
       this.selectedRecord = this.mostRecentRecord;
     } else {
@@ -129,13 +124,9 @@ export default class SeniorityExplorer extends Vue {
     return record;
   }
 
-  updateFilterDate(event: { date: Date; string: string }) {
-    const { date } = event;
-    this.activeFilterDate = date;
-  }
-
-  updateFilterStatus(event: FilterStatus) {
-    this.filterStatus = event;
+  updatePilotFilter(payload: { filter: PilotFilter; options: object }) {
+    const { filter } = payload;
+    this.filterFunction = filter;
   }
 }
 </script>

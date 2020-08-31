@@ -13,3 +13,5 @@ export const parseDate = (date: Date | string): string => {
   const [year, month, day] = dateStr.substr(0, 10).split("-");
   return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
 }
+
+export const isValidDate = (date: Date): boolean => date instanceof Date && !isNaN(+date);

@@ -1,9 +1,9 @@
 <template>
   <div class="seniority">
     <SeniorityExplorerSystemBar />
-    <v-container>
-      <v-row>
-        <v-col cols="12">
+    <v-container class="md-4">
+      <v-row justify="center">
+        <v-col cols="11">
           <div v-show="loading">Fetching data...</div>
           <router-view v-if="loading === false"></router-view>
         </v-col>
