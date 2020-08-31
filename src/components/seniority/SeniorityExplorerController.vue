@@ -53,6 +53,12 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col sm="4">
+          <v-select :items="baseSelectChoices" v-model="baseSelect" placeholder="Select Base"></v-select>
+        </v-col>
+      </v-row>
+
       <!-- TODO: move to parent -->
       <v-row align="center">
         <v-checkbox v-model="employeeDetailsEnabled"></v-checkbox>
@@ -74,8 +80,7 @@ import { PilotFilter, buildPilotFilter } from "@/seniority/filters";
 import {
   FilterBuilderOptions,
   ActiveFilterOptions,
-  ActiveFilterStatus,
-  Seat
+  ActiveFilterStatus
 } from "@/seniority/types";
 
 type ActiveRetiredStates = "ACTIVE" | "RETIRED";
@@ -105,6 +110,8 @@ export default class SeniorityExplorerController extends Vue {
   _employeeDetailsValue = "";
   activeRetireSelectItems: ActiveRetiredStates[] = ["ACTIVE", "RETIRED"];
   activeRetiredSelectState: ActiveRetiredStates = "ACTIVE";
+  baseSelect = "ALL";
+  baseSelectChoices = ["ALL", "BOS", "JFK", "MCO", "LGB", "FLL"];
 
   get pilotFilter(): PilotFilter {
     return this.buildFilter();
@@ -157,10 +164,23 @@ export default class SeniorityExplorerController extends Vue {
     };
   }
 
+  get baseFilterOptions(): { value: string } | null {
+    if (this.baseSelect === "ALL") {
+      return null;
+    }
+    return { value: this.baseSelect };
+  }
+
   get pilotFilterOptions(): FilterBuilderOptions {
+    const activeFilter =
+      this.activeFilterOptions != null ? this.activeFilterOptions : undefined;
+
+    const baseFilter =
+      this.baseFilterOptions != null ? this.baseFilterOptions : undefined;
+
     const out: FilterBuilderOptions = {
-      activeFilter:
-        this.activeFilterOptions != null ? this.activeFilterOptions : undefined
+      activeFilter,
+      baseFilter
     };
 
     return out;
