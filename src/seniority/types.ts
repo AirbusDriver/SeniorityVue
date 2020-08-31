@@ -47,3 +47,5 @@ export interface SeniorityRecord extends SeniorityRecordSummary {
 export interface BaseSeniorityService {
   getAllSeniorityRecordSummaries(): Promise<SeniorityRecordSummary[]>;
 }
+
+export type PilotRecordReducer = (records: PilotRecord[]) => PilotRecord[];
