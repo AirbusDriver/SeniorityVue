@@ -19,15 +19,20 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
-import { PilotRecord, EmployeeID } from "@/seniority/types";
-import Expansion from "./SeniorityExplorerDataTableExpansion.vue";
-import { TableItem, PilotRecordMapper } from "./types";
 import { parseDate } from "@/helpers";
-import { PilotFilter } from "../../seniority/filters";
+import { PilotRecord, EmployeeID } from "@/seniority/types";
+import { PilotFilter } from "@/seniority/filters";
+import { employeeIdFormatter } from "@/seniority/helpers";
+import { TableItem, PilotRecordMapper } from "./types";
+import Expansion from "./SeniorityExplorerDataTableExpansion.vue";
 
 const recordToTableItemMapper: PilotRecordMapper = record => {
   const retireDateString: string = parseDate(record.retireDate);
-  const out: TableItem = { ...record, retireDateString };
+  const out: TableItem = {
+    ...record,
+    retireDateString,
+    employeeID: employeeIdFormatter(record.employeeID)
+  };
   return out;
 };
 
