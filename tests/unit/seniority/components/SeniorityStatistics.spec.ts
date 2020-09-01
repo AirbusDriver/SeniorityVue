@@ -2,8 +2,16 @@ import { createWrapper } from '../../utils';
 import Vuex from 'vuex';
 import { SeniorityGetterTypes } from '@/store/seniority/types';
 import SeniorityStatistics from '@/components/seniority/SeniorityStatistics.vue';
+import { SeniorityRecord } from '@/seniority/types';
 
-const mockGetter = jest.fn(() => "mockedObject");
+const mockedRecord: SeniorityRecord = {
+  id: "123",
+  publishedDate: new Date(2020),
+  recordCount: 0,
+  records: []
+}
+
+const mockGetter = jest.fn(() => mockedRecord);
 const mockGetForId = jest.fn((id) => mockGetter);
 
 const storeFactory = () => new Vuex.Store({
@@ -17,12 +25,12 @@ const storeFactory = () => new Vuex.Store({
   }
 });
 
-const wrapper = createWrapper(SeniorityStatistics, { propsData: { recordId: "123" } }, false, storeFactory)
+const wrapper = createWrapper(SeniorityStatistics, { propsData: { recordId: "123" } }, true, storeFactory)
 
 it('calls', () => {
   expect(mockGetter).toHaveBeenCalledWith("123");
 });
 
 it('sets selected record', () => {
-  expect(wrapper.vm.$data.selectedRecord).toBe("mockedObject");
+  expect(wrapper.vm.$data.selectedRecord).toEqual(mockedRecord);
 });

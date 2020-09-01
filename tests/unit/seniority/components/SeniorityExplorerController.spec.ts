@@ -34,16 +34,6 @@ describe("SeniorityExplorerController", () => {
 
       expect(val).toMatch(`${(new Date()).toISOString().substr(0, 10)}`);
     });
-
-    test('it emits "update:active-filter-date" first empty then today\'s date info', async () => {
-      const [empty, first, ...rest] = wrapper.emitted()['update:active-filter-date']! as unknown as { date: Date; string: string }[][];
-
-      const { date, string } = first[0];
-
-      expect(date.toISOString().substring(0, 10)).toBe(new Date().toISOString().substring(0, 10));
-      expect(string).toBe(new Date().toISOString().substring(0, 10));
-
-    });
   });
 
   describe("when given a publishedDate prop", () => {
