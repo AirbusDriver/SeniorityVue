@@ -68,7 +68,7 @@ import { parseDate } from "@/helpers";
 export default class SeniorityExplorer extends Vue {
   @Prop({ type: String, default: "latest" }) readonly recordId!: string;
 
-  activeFilterDate: Date | null = new Date(Date.now());
+  activeFilterDate: Date | null = new Date(Date.now()); // TODO: remove
   showEmployeeDetails = "";
   loading = false;
   selectedRecord: SeniorityRecord | null = null;
@@ -102,7 +102,7 @@ export default class SeniorityExplorer extends Vue {
   }
 
   mounted() {
-    this.activeFilterDate = new Date(Date.now());
+    this.activeFilterDate = new Date(Date.now()); // TODO: remove
     if (this.recordId === "latest") {
       this.selectedRecord = this.mostRecentRecord;
     } else {
